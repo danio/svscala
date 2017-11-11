@@ -1,1 +1,0 @@
-scalac -bootclasspath /Users/dan/.sbt/boot/scala-2.12.3/lib/scala-library.jar -classpath /Users/dan/dev/svscala/target/scala-2.12/classes:/Users/dan/.ivy2/cache/org.scala-lang.modules/scala-parser-combinators_2.12/bundles/scala-parser-combinators_2.12-1.0.6.jar /Users/dan/dev/svscala/src/main/scala/svlis/Interval.scala
