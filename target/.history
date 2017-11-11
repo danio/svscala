@@ -1,0 +1,10 @@
+help
+new
+run
+~run
+run CubeCalculator
+show discoveredMainClasses
+help run
+~run
+exit
+~test
