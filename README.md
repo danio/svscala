@@ -1,7 +1,7 @@
 # Introduction
 
 A re-implementation in scala of the svLis set-theoretic solid modeller created by Dr Adrian Bowyer at the University of Bath.
-Full details about svLis can be found at ***URL*** and the source code is available at http://github.com/***URL***.
+Full details about svLis can be found at http://adrianbowyer.com/inge/svlis and the source code is available at https://github.com/AdrianRepRap/SvLis.
 
 # Roadmap
 
