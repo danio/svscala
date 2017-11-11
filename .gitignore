@@ -1,0 +1,8 @@
+*.cache
+**/resolution-cache
+**/target/**/*.class
+target/streams
+target/test-reports
+ListTest.*
+StackTest.*
+CubeCalculatorTest.*

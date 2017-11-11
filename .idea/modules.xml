@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/svscala.iml" filepath="$PROJECT_DIR$/.idea/modules/svscala.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/svscala-build.iml" filepath="$PROJECT_DIR$/.idea/modules/svscala-build.iml" />
     </modules>
   </component>
 </project>
