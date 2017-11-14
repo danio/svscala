@@ -1,4 +1,4 @@
-package svlis
+package svlis.lib
 
 // A Model is a Set within a Box in space
 // In the original svLis this was a list of sets
@@ -103,6 +103,7 @@ object Model {
 
   private def createDividedBoxes(box: Box, d: DivideDecision): (Box, Box) = {
     val cut = d.cut
+    println("cut", cut)
     d.k match {
       case ModelKind.XDiv => {
         val (iv1, iv2) = createDividedIntervals(box.xi, cut)

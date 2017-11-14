@@ -1,5 +1,5 @@
 import org.scalatest._
-import svlis._
+import svlis.lib._
 import svlis.utils._
 
 class ModelSpec extends FlatSpec with Matchers {
@@ -24,6 +24,8 @@ class ModelSpec extends FlatSpec with Matchers {
     }
 
     val divided = model.divide(decision)
+    // test divided boxes contents
+    // test some of air, solid, surface
     ModelDump.dump(divided)
   }
 }

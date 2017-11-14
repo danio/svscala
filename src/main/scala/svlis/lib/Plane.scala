@@ -1,6 +1,6 @@
-package svlis
+package svlis.lib
 
-import svlis._
+import svlis.lib._
 
 // From geometry.h 295- and geometry.cxx 299-
 

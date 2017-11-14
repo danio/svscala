@@ -1,4 +1,4 @@
-package svlis
+package svlis.lib
 
 // a 3D box comprising three intervals
 class Box(val xi: Interval, val yi: Interval, val zi: Interval) {

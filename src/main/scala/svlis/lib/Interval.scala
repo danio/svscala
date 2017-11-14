@@ -1,4 +1,4 @@
-package svlis
+package svlis.lib
 
 class Interval(val lo: Double, val hi: Double) {
   override def toString(): String = s"Interval [${lo}, ${hi}]"

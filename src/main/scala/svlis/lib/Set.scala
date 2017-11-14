@@ -1,4 +1,4 @@
-package svlis
+package svlis.lib
 
 class Set(val contents: Int, val prim: Primitive) {
   def this(prim: Primitive) = this(prim.contents, prim)

@@ -1,5 +1,5 @@
 import org.scalatest.FunSuite
-import svlis._
+import svlis.lib._
 
 class SetTest extends FunSuite {
   test("Set.fromPlane") {

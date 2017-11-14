@@ -1,6 +1,8 @@
 package svlis
 package utils
 
+import lib._
+
 object ModelDump {
   def dump_r(m: Model, level: Int = 0): Unit = {
     val indent = " " * level

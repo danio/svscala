@@ -1,4 +1,4 @@
-package svlis
+package svlis.lib
 
 import scala.math.sqrt
 

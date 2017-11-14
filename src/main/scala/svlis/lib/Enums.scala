@@ -1,4 +1,4 @@
-package svlis
+package svlis.lib
 
 object MemTest extends Enumeration {
   type MemTest = Value

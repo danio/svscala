@@ -1,4 +1,4 @@
-package svlis
+package svlis.lib
 
 object PrimKind extends Enumeration {
   type PrimKind = Value
