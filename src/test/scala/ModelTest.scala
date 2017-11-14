@@ -12,12 +12,14 @@ class ModelSpec extends FlatSpec with Matchers {
     val box = new Box(new Point(0, 0, 0), new Point(2, 2, 2))
     val model = Model(set, box)
 
+    def mid(iv: Interval): Double = iv.lo + (iv.hi - iv.lo) / 2.0d
+
     def decision(m: Model, level: Int): DivideDecision = {
       if (level > 3) new DivideDecision(ModelKind.Leaf, 0)
       else level % 3 match {
-        case 0 => new DivideDecision(ModelKind.XDiv, (m.box.xi.hi - m.box.xi.lo) / 2.0d)
-        case 1 => new DivideDecision(ModelKind.YDiv, (m.box.yi.hi - m.box.yi.lo) / 2.0d)
-        case 2 => new DivideDecision(ModelKind.ZDiv, (m.box.zi.hi - m.box.zi.lo) / 2.0d)
+        case 0 => new DivideDecision(ModelKind.XDiv, mid(m.box.xi))
+        case 1 => new DivideDecision(ModelKind.YDiv, mid(m.box.yi))
+        case 2 => new DivideDecision(ModelKind.ZDiv, mid(m.box.zi))
       }
     }
 
