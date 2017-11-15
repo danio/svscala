@@ -72,6 +72,18 @@ trait Model {
   def redivide(s: Set, decision: (Model, Int) => DivideDecision): Model = {
     redivide_r(s, decision, 0)
   }
+
+  // Depth-first walk of the model's children tree
+  def walk(f: (Model, Int) => Unit, level: Int = 0): Unit = {
+    f(this, level)
+    this match {
+      case LeafModel(_, _, _) => ()
+      case DividedModel(_, _, _, c1, c2) => {
+        c1.walk(f, level + 1)
+        c2.walk(f, level + 1)
+      }
+    }
+  }
 }
 
 case class UndividedModel(s: Set, b: Box) extends Model {
@@ -103,7 +115,6 @@ object Model {
 
   private def createDividedBoxes(box: Box, d: DivideDecision): (Box, Box) = {
     val cut = d.cut
-    println("cut", cut)
     d.k match {
       case ModelKind.XDiv => {
         val (iv1, iv2) = createDividedIntervals(box.xi, cut)
