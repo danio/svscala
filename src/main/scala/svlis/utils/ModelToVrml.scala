@@ -7,14 +7,32 @@ import lib._
 // VRML export logic from polygon.cxx lines 1861-2116
 
 class ModelToVrml(val pw: PrintWriter, val writeBoxes: Boolean = false, val writeVoxels: Boolean = true, val writeFaces: Boolean = true) {
-  def writeModel(m: Model, level: Int) = {
-    m match {
-      case LeafModel(_, _, _) => writeBox(m)
-      case DividedModel(_, _, _, c1, c2) => ()
-    }
+  def writeBox(sx: Double, sy: Double, sz: Double) = {
+    pw.write(s"       geometry Box { size $sx $sy $sz }\n")
   }
 
-  def writeBox(m: Model) = {
+  def writeTransformedChildren(pre: String, tx: Double, ty: Double, tz: Double, writeChildren: () => Unit) = {
+    pw.write(pre + s"Transform { translation $tx $ty $tz\n")
+    pw.write(pre + " children [\n")
+    writeChildren()
+    pw.write(pre + " ]\n")
+    pw.write(pre + "}\n")
+  }
+
+  def writeTransformedShape(tx: Double, ty: Double, tz: Double, writeShape: () => Unit, writeMaterial: () => Unit = () => ()) = {
+    writeTransformedChildren("    ", tx, ty, tz, () => {
+      pw.write("      Shape {\n")
+      writeShape()
+      pw.write("       appearance Appearance { \n")
+      pw.write("        material Material { ")
+      writeMaterial()
+      pw.write("}\n")
+      pw.write("      }\n")
+      pw.write("     }\n")
+    })
+  }
+
+  def writeModelBox(m: Model) = {
     if (m.set.contents != Contents.Nothing) {
       val sx = m.box.xi.hi - m.box.xi.lo
       val sy = m.box.yi.hi - m.box.yi.lo
@@ -25,28 +43,25 @@ class ModelToVrml(val pw: PrintWriter, val writeBoxes: Boolean = false, val writ
       val ty = sy / 2 + m.box.yi.lo
       val tz = sz / 2 + m.box.zi.lo
       val b = m.box
-      pw.write(s"    Transform {\n     translation $tx $ty $tz\n     children [\n")
-      pw.write("    Shape {\n")
-      pw.write("     geometry Box {\n")
-      pw.write(s"      size $sx $sy $sz\n")
-      pw.write("     }\n")
-      pw.write("     appearance Appearance { \n")
-      pw.write("       material Material { ")
-      if (m.set.contents != Contents.Everything) {
-        pw.write("transparency 0.2 ")
-      }
-      // TODO pw.write(" diffuseColor 1.0 1.0 0.0")
-      pw.write("}\n")
-      pw.write("     }\n")
-      pw.write("    }\n")
-      pw.write("    ] }\n")
+      writeTransformedShape(tx, ty, tz,
+        () => writeBox(sx, sy, sz),
+        () => {
+          if (m.set.contents != Contents.Everything) {
+            pw.write("transparency 0.2 ")
+          }
+          // TODO pw.write(" diffuseColor 1.0 1.0 0.0")
+        })
     }
   }
 
-  def write(m: Model): Unit = {
-    val b = m.box
-    val c = b.centroid() // TODO b.centroid + SV_Z * d
+  def writeModel(m: Model, level: Int) = {
+    m match {
+      case LeafModel(_, _, _) => writeModelBox(m)
+      case DividedModel(_, _, _, c1, c2) => ()
+    }
+  }
 
+  def writeHeader() = {
     pw.write("#VRML V2.0 utf8\n\n")
     pw.write("WorldInfo {\n")
     pw.write(" info [\n")
@@ -55,19 +70,19 @@ class ModelToVrml(val pw: PrintWriter, val writeBoxes: Boolean = false, val writ
     pw.write(" ]\n")
     pw.write(" title \"svLis\"\n")
     pw.write("}\n")
+  }
+
+  def write(m: Model) = {
+    writeHeader()
     pw.write("Transform {\n")
     pw.write(" children [\n")
     pw.write("  NavigationInfo { headlight TRUE type \"EXAMINE\"}\n")
     pw.write("  Viewpoint { orientation 0 0 0  0  position 0 0 10  description \"Front\" }\n")
     pw.write("  Background { groundColor [ 0.3 0.2 0.1 ] skyColor [ 0.6 0.7 1.0 ] }\n")
-    pw.write("  Transform {\n")
-    pw.write("   translation " + -c.x + ' ' + -c.y + ' ' + -c.z + "\n")
-    pw.write("   children [\n")
-
-    m.walk(writeModel)
-
-    pw.write("   ]\n")
-    pw.write("  }\n")
+    val c = m.box.centroid() // TODO b.centroid + SV_Z * d
+    writeTransformedChildren("  ", -c.x, -c.y, -c.z, () => {
+      m.walk(writeModel)
+    })
     pw.write(" ]\n")
     pw.write("}\n")
   }
