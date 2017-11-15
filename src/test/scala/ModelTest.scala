@@ -15,7 +15,7 @@ class ModelSpec extends FlatSpec with Matchers {
     def mid(iv: Interval): Double = iv.lo + (iv.hi - iv.lo) / 2.0d
 
     def decision(m: Model, level: Int): DivideDecision = {
-      if (level > 3) new DivideDecision(ModelKind.Leaf, 0)
+      if (level > 13 || m.set.contents <= Contents.Nothing) new DivideDecision(ModelKind.Leaf, 0)
       else level % 3 match {
         case 0 => new DivideDecision(ModelKind.XDiv, mid(m.box.xi))
         case 1 => new DivideDecision(ModelKind.YDiv, mid(m.box.yi))
@@ -24,8 +24,9 @@ class ModelSpec extends FlatSpec with Matchers {
     }
 
     val divided = model.divide(decision)
-    // test divided boxes contents
-    // test some of air, solid, surface
+    // TODO test divided boxes contents
+    // TODO test some of air, solid, surface
     ModelDump.dump(divided)
+    ModelToVrml.write(divided, "divided.wrl", true)
   }
 }
