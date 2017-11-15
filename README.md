@@ -8,9 +8,9 @@ Full details about svLis can be found at http://adrianbowyer.com/inge/svlis and 
 My intent is to build up the software in a way that at each stage the modeller is fully usable,
 however the functionality will be limited at each stage.
 I anticipate that the stages will be:
-1. Single plane support with model division (currently in-progress)
+1. Single plane support with model division
 1. Export model voxels in format suitable for 3D viewer
-1. Add set operations to support multiple primitives in a set
+1. Add set operations to support multiple primitives in a set (currently in-progress)
 1. Add additional primitives
 1. Add primitive operations
 1. Built-in 3D display
