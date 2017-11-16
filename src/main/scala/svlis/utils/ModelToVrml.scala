@@ -12,11 +12,11 @@ class ModelToVrml(val pw: PrintWriter, val writeBoxes: Boolean = false, val writ
   }
 
   def writeTransformedChildren(pre: String, tx: Double, ty: Double, tz: Double, writeChildren: () => Unit) = {
-    pw.write(pre + s"Transform { translation $tx $ty $tz\n")
-    pw.write(pre + " children [\n")
+    pw.write(s"${pre}Transform { translation $tx $ty $tz\n")
+    pw.write(s"${pre}children [\n")
     writeChildren()
-    pw.write(pre + " ]\n")
-    pw.write(pre + "}\n")
+    pw.write(s"${pre} ]\n")
+    pw.write(s"${pre}}\n")
   }
 
   def writeTransformedShape(tx: Double, ty: Double, tz: Double, writeShape: () => Unit, writeMaterial: () => Unit = () => ()) = {
