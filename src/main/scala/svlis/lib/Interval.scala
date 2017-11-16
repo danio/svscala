@@ -1,7 +1,7 @@
 package svlis.lib
 
 class Interval(val lo: Double, val hi: Double) {
-  override def toString(): String = s"Interval [${lo}, ${hi}]"
+  override def toString(): String = f"Interval [$lo%.3f, $hi%.3f]"
 
   // Membership test value represented by an interval
   def member(): MemTest.Value = {
