@@ -92,7 +92,7 @@ class ModelToVrml(val pw: PrintWriter, val writeAxes: Boolean = false, val write
   def writeArrow(pre: String, direction: Point, colour: Point, baseSize: Double, scale: Double, pointRotation: Point, rotation: Double) = {
     val translation = direction * baseSize * (1.0 + scale)
     writeShape(pre + " ",
-      (pre) => writeLine(pre)(new Point(0, 0, 0), translation),
+      (pre) => writeLine(pre)(Point.Origin, translation),
       () => pw.write(s"emissiveColor ${colour.x} ${colour.y} ${colour.z}"))
     val coneHeight = baseSize * scale / 2.0
     writeTransformedChildren(pre,
@@ -108,9 +108,9 @@ class ModelToVrml(val pw: PrintWriter, val writeAxes: Boolean = false, val write
   }
 
   def writeAxes(pre: String, m: Model) = {
-    writeArrow(pre, new Point(1, 0, 0), new Point(1, 0, 0), m.box.xi.hi, 0.4, new Point(0, 0, 1), -1.57)
-    writeArrow(pre, new Point(0, 1, 0), new Point(0, 1, 0), m.box.yi.hi, 0.4, new Point(0, 0, 0), 0)
-    writeArrow(pre, new Point(0, 0, 1), new Point(0, 0, 1), m.box.yi.hi, 0.4, new Point(1, 0, 0), 1.57)
+    writeArrow(pre, Point.X, Color.Red, m.box.xi.hi, 0.4, Point.Z, -1.57)
+    writeArrow(pre, Point.Y, Color.Green, m.box.yi.hi, 0.4, Point.Origin, 0)
+    writeArrow(pre, Point.Z, Color.Blue, m.box.yi.hi, 0.4, Point.X, 1.57)
   }
 
   def writeHeader() = {
@@ -131,6 +131,7 @@ class ModelToVrml(val pw: PrintWriter, val writeAxes: Boolean = false, val write
     pw.write("  NavigationInfo { headlight TRUE type \"EXAMINE\"}\n")
     pw.write("  Viewpoint { orientation 0 0 0  0  position 0 0 10  description \"Front\" }\n")
     pw.write("  Background { groundColor [ 0.3 0.2 0.1 ] skyColor [ 0.6 0.7 1.0 ] }\n")
+    // val d = sqrt(b.diag_sq())
     val c = m.box.centroid() // TODO b.centroid + SV_Z * d
     writeTranslatedChildren("  ", -c.x, -c.y, -c.z, () => {
       if (writeAxes) writeAxes("   ", m)

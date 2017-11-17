@@ -37,3 +37,14 @@ class Point(val x: Double, val y: Double, val z: Double)
     this / b
   }
 }
+
+object Point {
+  // equivalent to SV_X, SV_Y, SV_Z, SV_OO, SV_DIAG in enum_def.h
+  // The coordinate directions and origin; useful in all sorts
+  // of places; also the positive diagonal
+  val X = new Point(1, 0, 0)
+  val Y = new Point(0, 1, 0)
+  val Z = new Point(0, 0, 1)
+  val Origin = new Point(0, 0, 0)
+  val Diag = new Point(1, 1, 1)
+}
