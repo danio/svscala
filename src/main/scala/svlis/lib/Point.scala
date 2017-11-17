@@ -10,6 +10,10 @@ class Point(val x: Double, val y: Double, val z: Double)
     new Point(-x, -y, -z)
   }
 
+  // Multiply/divide by a real
+
+  def *(b: Double): Point = new Point(x * b, y * b, z * b)
+
   def /(b: Double): Point = {
     assert(b != 0.0) // TODO better handle error
     //  svlis_error("sv_point::operator/","division by 0",SV_WARNING);
