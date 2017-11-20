@@ -26,6 +26,23 @@ class SetTest extends FunSuite {
     assert(pruned3.contents === Contents.Everything)
   }
 
+  test("Set.union") {
+    val normal1 = new Point(1, 0, 0)
+    val normal2 = new Point(0, 1, 0)
+    val through = new Point(1, 1, 1)
+    val plane1 = new Set(new Primitive(new Plane(normal1, through)))
+    val plane2 = new Set(new Primitive(new Plane(normal2, through)))
+    val set = plane1 | plane2
+
+    assert(set.prune(SetTest.wholeBox).contents === 2)
+
+    assert(set.prune(SetTest.topLeftCorner).contents === Contents.Everything)
+    assert(set.prune(SetTest.topRightCorner).contents === Contents.Nothing)
+
+    assert(set.prune(SetTest.bottomLeftCorner).contents === Contents.Everything)
+    assert(set.prune(SetTest.bottomRightCorner).contents === Contents.Everything)
+  }
+
   test("Set.intersection") {
     val normal1 = new Point(-1, 1, 0)
     val normal2 = new Point(1, 1, 0)

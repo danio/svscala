@@ -23,7 +23,40 @@ class Set(val op: SetOp.Value, val contents: Int, val prim: Primitive, val child
   // see all commented out set_flags, set_flags_priv, flags()
 
   // Set union
-  //def |(b: Set): Set
+  def |(b: Set): Set= {
+    // TODO rationalise
+    val c = contents match {
+      case Contents.Everything => new Set(Contents.Everything)
+      case Contents.Nothing => b
+      case 1 => b.contents match {
+        case Contents.Everything => new Set(Contents.Everything)
+        case Contents.Nothing => this
+        case 1 => {
+          if (prim.degree > b.prim.degree) {
+            new Set(b, this, SetOp.Union)
+          } else {
+            new Set(this, b, SetOp.Union)
+          }
+        }
+        case _ => new Set(this, b, SetOp.Union)
+      }
+      case _ => b.contents match {
+        case Contents.Everything => new Set(Contents.Everything)
+        case Contents.Nothing => this
+        case 1 => new Set(b, this, SetOp.Union)
+        case _ => {
+          if (contents > b.contents) {
+            new Set(b, this, SetOp.Union)
+          } else {
+            new Set(this, b, SetOp.Union)
+          }
+        }
+      }
+    }
+
+    // if( (flags() & SV_CV_POL) && (b.flags() & SV_CV_POL) ) c.set_flags_priv(SV_CV_POL);
+    c
+  }
 
   // Set intersection
   def &(b: Set): Set = {
@@ -46,7 +79,7 @@ class Set(val op: SetOp.Value, val contents: Int, val prim: Primitive, val child
       case _ => b.contents match {
         case Contents.Everything => this
         case Contents.Nothing => new Set(Contents.Nothing)
-        case 1 => new Set(this, b, SetOp.Intersection)
+        case 1 => new Set(b, this, SetOp.Intersection)
         case _ => {
           if (contents > b.contents) {
             new Set(b, this, SetOp.Intersection)
@@ -89,8 +122,18 @@ class Set(val op: SetOp.Value, val contents: Int, val prim: Primitive, val child
       val pruned_1 = child1.prune(b)
       val c_1_same = (pruned_1 == child1)
       if (op == SetOp.Union) {
-        this
-        // TODO logic from set.cxx 1219-1234
+        pruned_1.contents match {
+          case Contents.Everything => pruned_1
+          case Contents.Nothing => child2.prune(b)
+          case _ => {
+            val temp = child2.prune(b)
+            if (c_1_same && (child2 == temp)) {
+              this
+            } else {
+              pruned_1 | temp
+            }
+          }
+        }
       }
       else { // SetOp.Intersection
         pruned_1.contents match {
@@ -107,6 +150,7 @@ class Set(val op: SetOp.Value, val contents: Int, val prim: Primitive, val child
         }
       }
     }
+
     //if(reg_prune) pruned = pruned.regularize();
     //return(att_prune(pruned, *this, b));
     pruned

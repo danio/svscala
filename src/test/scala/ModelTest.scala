@@ -37,6 +37,38 @@ class ModelSpec extends FlatSpec with Matchers {
     assert(boxContents(1) > 0)
   }
 
+  it should "support unioned sets" in {
+    val normal1 = new Point(1, 0, 0)
+    val normal2 = new Point(0, 1, 0)
+    val through = new Point(1, 1, 1)
+    val plane1 = new Set(new Primitive(new Plane(normal1, through)))
+    val plane2 = new Set(new Primitive(new Plane(normal2, through)))
+    val set = plane1 | plane2
+
+
+    val box = new Box(new Point(0, 0, 0), new Point(2, 2, 2))
+    val model = Model(set, box)
+
+    val divided = model.divide(ModelSpec.decision(8))
+
+    val boxContents = new HashMap[Int, Int]()
+    def checkBox(m: Model, level: Int) = {
+      // the plane is through the line x = y so should divided as air/solid on y > x
+      if (m.box.xi.hi < 0.26 && m.box.yi.lo > 1.6) m.set.contents should be(Contents.Everything)
+      if (m.box.xi.hi > 1.74 && m.box.yi.lo > 1.6) m.set.contents should be(Contents.Nothing)
+      if (m.box.xi.hi < 0.26 && m.box.yi.hi < 0.26) m.set.contents should be(Contents.Everything)
+      if (m.box.xi.hi > 1.74 && m.box.yi.hi < 0.26) m.set.contents should be(Contents.Everything)
+      boxContents(m.set.contents) = boxContents.getOrElseUpdate(m.set.contents, 0) + 1
+    }
+    divided.walk(checkBox)
+    assert(boxContents(Contents.Nothing) > 0)
+    assert(boxContents(Contents.Everything) > 0)
+    assert(boxContents(1) > 0)
+
+    //ModelDump.dump(divided)
+    ModelToVrml.write(divided, "dividedUnion.wrl", true)
+  }
+
   it should "support intersected sets" in {
     val normal1 = new Point(-1, 1, 0)
     val normal2 = new Point(1, 1, 0)
@@ -65,7 +97,7 @@ class ModelSpec extends FlatSpec with Matchers {
     assert(boxContents(1) > 0)
 
     //ModelDump.dump(divided)
-    ModelToVrml.write(divided, "divided2.wrl", true)
+    ModelToVrml.write(divided, "dividedIntersection.wrl", true)
   }
 }
 
