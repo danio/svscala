@@ -15,8 +15,13 @@ I anticipate that the stages will be:
 1. Add primitive operations
 1. Built-in 3D display
 1. Model faceter to create polygonal models for display
+1. Support set colouring
 1. Efficiently redivide an already divided model
 1. Optimise model division to use sub-models returned by decision function
+
+# How to use svLis
+
+See the scala/example directory for examples of generating 3D models
 
 # svLis compatibility
 
