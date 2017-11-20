@@ -10,8 +10,14 @@ object PrimOp extends Enumeration {
   val Zero, Plus, Minus, Times, Divide, Power = Value
 }
 
-class Primitive(val kind: PrimKind.Value, val flat: Plane, val real: Double, op: PrimOp.Value, degree: Int) {
-  def this() = this(PrimKind.Real, new Plane(), 0.0d, PrimOp.Zero, 1)
+class Primitive(
+  val kind: PrimKind.Value, // Indicates if this is a plane, real or compound
+  val flat: Plane,          // Arithmetic is done on planes and reals
+  val real: Double,
+  op: PrimOp.Value,         // If compound, this says +, -, *, /, ^, or one of the monadics
+  val degree: Int)              // Highest power (trancendentals add one)
+{
+  def this() = this(PrimKind.Real, new Plane(), 0.0d, PrimOp.Zero, 0)
   def this(flat: Plane) = this(PrimKind.Plane, flat, 0.0d, PrimOp.Zero, 1)
 
   // from set.h lines 104-111
