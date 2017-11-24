@@ -15,8 +15,8 @@ class Primitive(
   val kind: PrimKind.Value, // Indicates if this is a plane, real or compound
   val flat: Plane,          // Arithmetic is done on planes and reals
   val real: Double,
-  op: PrimOp.Value,         // If compound, this says +, -, *, /, ^, or one of the monadics
-  val degree: Int,              // Highest power (trancendentals add one)
+  private val op: PrimOp.Value,         // If compound, this says +, -, *, /, ^, or one of the monadics
+  val degree: Int,          // Highest power (trancendentals add one)
   val child_1: Option[Primitive],
   val child_2: Option[Primitive])
 {
@@ -53,9 +53,9 @@ class Primitive(
     if (op == PrimOp.Comp) {
       child_1.get
     } else {
-      val bFlat = if (kind == PrimKind.Plane) -flat else Plane.None
-      val bReal = if (kind == PrimKind.Real) -real else 0.0d
-      new Primitive(kind, bFlat, bReal, PrimOp.Comp, degree + 1, Some(this), None)
+      val newFlat = if (kind == PrimKind.Plane) -flat else Plane.None
+      val newReal = if (kind == PrimKind.Real) -real else 0.0d
+      new Primitive(kind, newFlat, newReal, PrimOp.Comp, degree + 1, Some(this), None)
     }
   }
 }

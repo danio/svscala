@@ -131,8 +131,8 @@ class ModelSpec extends FlatSpec with Matchers {
     val box = new Box(new Point(0, 0, 0), new Point(2, 2, 2))
     val model = Model(set, box)
 
-    val divided = model.divide(ModelSpec.decision(12))
-    ModelToVrml.write(divided, "setDifference.wrl", true)
+//    val divided = model.divide(ModelSpec.decision(12))
+//    ModelToVrml.write(divided, "setDifference.wrl", true)
   }
 
   it should "support symmetric set difference" in {
@@ -151,8 +151,8 @@ class ModelSpec extends FlatSpec with Matchers {
     val box = new Box(new Point(0, 0, 0), new Point(2, 2, 2))
     val model = Model(set, box)
 
-    val divided = model.divide(ModelSpec.decision(12))
-    ModelToVrml.write(divided, "setSymmetricDifference.wrl", true)
+//    val divided = model.divide(ModelSpec.decision(12))
+//    ModelToVrml.write(divided, "setSymmetricDifference.wrl", true)
   }
 }
 

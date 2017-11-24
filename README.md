@@ -3,11 +3,15 @@
 A re-implementation in scala of the svLis set-theoretic solid modeller created by Dr Adrian Bowyer at the University of Bath.
 Full details about svLis can be found at http://adrianbowyer.com/inge/svlis and the source code is available at https://github.com/AdrianRepRap/SvLis.
 
-# Roadmap
+# How to use svLis
 
-My intent is to build up the software in a way that at each stage the modeller is fully usable,
+See the scala/example directory for examples of generating 3D models
+
+# Project roadmap
+
+The intent is to build up the software in a way that at each stage the modeller is fully usable,
 however the functionality will be limited at each stage.
-I anticipate that the stages will be:
+The anticipated work stages are:
 1. Single plane support with model division
 1. Export model voxels in format suitable for 3D viewer
 1. Add set operations to support multiple primitives in a set
@@ -19,14 +23,10 @@ I anticipate that the stages will be:
 1. Efficiently redivide an already divided model
 1. Optimise model division to use sub-models returned by decision function
 
-# How to use svLis
-
-See the scala/example directory for examples of generating 3D models
-
 # svLis compatibility
 
 The classes, class names, method, field and variable names have been chosen to match svLis,
-however the sv_ prefix has been dropped and I have followed Scala naming conventions (e.g. Capitalised Classes).
+however the sv_ prefix has been dropped and Scala naming conventions are followed (e.g. Capitalised Classes).
 
 Compatibility has been retained as closely as possible,
 so that e.g. any functionality from svLis model.h and model.cxx is found in Model.scala.
