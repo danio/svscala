@@ -11,6 +11,7 @@ import svlis.lib._
 class Plane(val normal: Point, val d: Double) {
   // Null constructor
   def this() = this(new Point(0, 0, 1), 0)
+
   // Constructor takes a normal vector (a) and a point through which
   // the plane is to pass (b).
   def this(a: Point, b: Point) = this(a.norm, -b * a.norm)
@@ -19,4 +20,13 @@ class Plane(val normal: Point, val d: Double) {
   def range(b: Box): Interval = {
     b.xi * normal.x + b.yi * normal.y + b.zi * normal.z + d
   }
+
+  // Monadic - means complement
+  def unary_-(): Plane = {
+    new Plane(-normal, -d)
+  }
+}
+
+object Plane {
+  def None = new Plane()
 }

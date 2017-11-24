@@ -99,6 +99,23 @@ class ModelSpec extends FlatSpec with Matchers {
     //ModelDump.dump(divided)
     ModelToVrml.write(divided, "dividedIntersection.wrl", true)
   }
+
+  it should "support set complement" in {
+    val normal1 = new Point(-1, 1, 0)
+    val normal2 = new Point(1, 1, 0)
+    val through = new Point(1, 2, 1)
+    val slope1 = new Set(new Primitive(new Plane(normal1, through)))
+    val slope2 = new Set(new Primitive(new Plane(normal2, through)))
+    val set = -(slope1 & slope2)
+
+    val box = new Box(new Point(0, 0, 0), new Point(2, 2, 2))
+    val model = Model(set, box)
+
+    val divided = model.divide(ModelSpec.decision(10))
+
+    //ModelDump.dump(divided)
+    ModelToVrml.write(divided, "dividedIntersectionComplement.wrl", true)
+  }
 }
 
 object ModelSpec {

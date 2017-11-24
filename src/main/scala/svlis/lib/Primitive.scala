@@ -2,12 +2,13 @@ package svlis.lib
 
 object PrimKind extends Enumeration {
   type PrimKind = Value
-  val Real, Plane, General = Value
+  val Real, Plane = Value
 }
 
 object PrimOp extends Enumeration {
   type PrimOp = Value
-  val Zero, Plus, Minus, Times, Divide, Power = Value
+  // TODO remove Zero?
+  val Zero, Plus, Minus, Times, Divide, Power, Comp = Value
 }
 
 class Primitive(
@@ -15,10 +16,16 @@ class Primitive(
   val flat: Plane,          // Arithmetic is done on planes and reals
   val real: Double,
   op: PrimOp.Value,         // If compound, this says +, -, *, /, ^, or one of the monadics
-  val degree: Int)              // Highest power (trancendentals add one)
+  val degree: Int,              // Highest power (trancendentals add one)
+  val child_1: Option[Primitive],
+  val child_2: Option[Primitive])
 {
-  def this() = this(PrimKind.Real, new Plane(), 0.0d, PrimOp.Zero, 0)
-  def this(flat: Plane) = this(PrimKind.Plane, flat, 0.0d, PrimOp.Zero, 1)
+  // Build a compound primitive from one other and a monadic operator
+//  def this(a: Primitive, op: PrimOp.Value)
+//    = this(PrimKind.General, new Plane(), 0.0d, op, a.degree + 1, Some(a), None)
+
+  def this() = this(PrimKind.Real, Plane.None, 0.0d, PrimOp.Zero, 0, None, None)
+  def this(flat: Plane) = this(PrimKind.Plane, flat, 0.0d, PrimOp.Zero, 1, None, None)
 
   // from set.h lines 104-111
   def contents: Int = {
@@ -34,7 +41,21 @@ class Primitive(
     kind match {
       case PrimKind.Real => new Interval(0, 0) // TODO svlis_error("sv_primitive::range(box)","primitive is a single constant", SV_WARNING);
       case PrimKind.Plane if op == PrimOp.Zero => flat.range(b)
-        // TODO cases from prim.cxx 2108- including fall through of Plane with an op
+      case _ => op match {
+        case PrimOp.Comp => -child_1.get.range(b)
+      }
+      // TODO rest of cases from prim.cxx 2108- including fall through of Plane with an op
+    }
+  }
+
+  // Complement a sv_primitive
+  def unary_-(): Primitive = {
+    if (op == PrimOp.Comp) {
+      child_1.get
+    } else {
+      val bFlat = if (kind == PrimKind.Plane) -flat else Plane.None
+      val bReal = if (kind == PrimKind.Real) -real else 0.0d
+      new Primitive(kind, bFlat, bReal, PrimOp.Comp, degree + 1, Some(this), None)
     }
   }
 }

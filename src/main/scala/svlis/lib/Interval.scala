@@ -23,6 +23,9 @@ class Interval(val lo: Double, val hi: Double) {
       MemTest.Air
   }
 
+  // Monadic minus
+  def unary_-(): Interval = new Interval(-hi, -lo)
+
   // Intervals and reals
 
   def +(b: Double): Interval = {

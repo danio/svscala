@@ -2,6 +2,19 @@ import org.scalatest.FunSuite
 import svlis.lib._
 
 class SetTest extends FunSuite {
+  test("Set.basics") {
+    val sn1 = new Set(Contents.Nothing)
+    val se1 = new Set(Contents.Everything)
+    assert(sn1 != se1)
+
+    val sn2 = new Set(Contents.Nothing)
+    assert(sn1 != sn2)
+
+    val sn3 = Set.Nothing
+    val sn4 = Set.Nothing
+    assert(sn3 == sn4)
+  }
+
   test("Set.fromPlane") {
     val normal = new Point(1, 1, 0)
     val through = new Point(4, 5, 6)

@@ -26,10 +26,10 @@ class Set(val op: SetOp.Value, val contents: Int, val prim: Primitive, val child
   def |(b: Set): Set= {
     // TODO rationalise
     val c = contents match {
-      case Contents.Everything => new Set(Contents.Everything)
+      case Contents.Everything => Set.Everything
       case Contents.Nothing => b
       case 1 => b.contents match {
-        case Contents.Everything => new Set(Contents.Everything)
+        case Contents.Everything => Set.Everything
         case Contents.Nothing => this
         case 1 => {
           if (prim.degree > b.prim.degree) {
@@ -41,7 +41,7 @@ class Set(val op: SetOp.Value, val contents: Int, val prim: Primitive, val child
         case _ => new Set(this, b, SetOp.Union)
       }
       case _ => b.contents match {
-        case Contents.Everything => new Set(Contents.Everything)
+        case Contents.Everything => Set.Everything
         case Contents.Nothing => this
         case 1 => new Set(b, this, SetOp.Union)
         case _ => {
@@ -63,10 +63,10 @@ class Set(val op: SetOp.Value, val contents: Int, val prim: Primitive, val child
     // TODO rationalise
     val c = contents match {
       case Contents.Everything => b
-      case Contents.Nothing => new Set(Contents.Nothing)
+      case Contents.Nothing => Set.Nothing
       case 1 => b.contents match {
         case Contents.Everything => this
-        case Contents.Nothing => new Set(Contents.Nothing)
+        case Contents.Nothing => Set.Nothing
         case 1 => {
           if (prim.degree > b.prim.degree) {
             new Set(b, this, SetOp.Intersection)
@@ -78,7 +78,7 @@ class Set(val op: SetOp.Value, val contents: Int, val prim: Primitive, val child
       }
       case _ => b.contents match {
         case Contents.Everything => this
-        case Contents.Nothing => new Set(Contents.Nothing)
+        case Contents.Nothing => Set.Nothing
         case 1 => new Set(b, this, SetOp.Intersection)
         case _ => {
           if (contents > b.contents) {
@@ -95,7 +95,23 @@ class Set(val op: SetOp.Value, val contents: Int, val prim: Primitive, val child
   }
 
   // Set complement
-  //def ~(b: Set): Set
+  def unary_-(): Set = {
+    contents match {
+      case Contents.Everything => Set.Everything
+      case Contents.Nothing => Set.Nothing
+      case 1 => new Set(-prim)
+      case _ => { // De Morgan's law
+        if (op == SetOp.Union) {
+          (-child_1.get & -child_2.get)
+        } else {
+          (-child_1.get | -child_2.get)
+        }
+      }
+
+      // TODO attribute complement (set.xx:614)
+      // TODO svlis caches the complement, is it beneficial?
+    }
+  }
 
   // Range for a box (and winning leaves)
   def range(b: Box) = {
@@ -111,9 +127,9 @@ class Set(val op: SetOp.Value, val contents: Int, val prim: Primitive, val child
     } else if (contents == 1) {
       val m = prim.range(b).member()
       m match {
-        case MemTest.Air => new Set(Contents.Nothing)
+        case MemTest.Air => Set.Nothing
         case MemTest.Surface => this
-        case MemTest.Solid => new Set(Contents.Everything)
+        case MemTest.Solid => Set.Everything
         case _ => this // TODO svlis_error("sv_set::prune(sv_box)", "dud mem test", SV_CORRUPT)
       }
     } else {
@@ -155,4 +171,12 @@ class Set(val op: SetOp.Value, val contents: Int, val prim: Primitive, val child
     //return(att_prune(pruned, *this, b));
     pruned
   }
+}
+
+object Set {
+  // equivalent to SV_X, SV_Y, SV_Z, SV_OO, SV_DIAG in enum_def.h
+  // The coordinate directions and origin; useful in all sorts
+  // of places; also the positive diagonal
+  val Nothing = new Set(Contents.Nothing)
+  val Everything = new Set(Contents.Everything)
 }

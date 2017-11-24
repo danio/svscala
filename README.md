@@ -31,9 +31,12 @@ however the sv_ prefix has been dropped and I have followed Scala naming convent
 Compatibility has been retained as closely as possible,
 so that e.g. any functionality from svLis model.h and model.cxx is found in Model.scala.
 
-Models contain sets rather than set lists, and set attributes have not been implemented.
+The methods in scala classes are ordered to match those from the C++ files to make it easier to compare the two codebases.
 
-Other differences to svLis:
+Differences to svLis:
+- The inner data structs for primitives, sets and models have not been used, the classes have the data as direct immutable members instead.
+- Models contain sets rather than set lists.
+- Set attributes have not been implemented.
 - The sv_real class has been dropped and Double is used instead.
 - geometry.h/geometry.cxx has been split into Point.scala and Plane.scala.
 - prim.h/prim.cxx becomes Primitive.scala.
