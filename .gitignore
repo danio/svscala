@@ -1,10 +1,15 @@
+.DS_store
+
 *.cache
 **/resolution-cache
 **/target/**/*.class
+target/.history
 target/streams
 target/test-reports
+
+*.wrl
+
 ListTest.*
 StackTest.*
 CubeCalculatorTest.*
 CubeCalculator.scala
-

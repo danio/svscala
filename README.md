@@ -10,8 +10,8 @@ however the functionality will be limited at each stage.
 I anticipate that the stages will be:
 1. Single plane support with model division
 1. Export model voxels in format suitable for 3D viewer
-1. Add set operations to support multiple primitives in a set (currently in-progress)
-1. Add additional primitives
+1. Add set operations to support multiple primitives in a set
+1. Add additional primitives (currently in-progress)
 1. Add primitive operations
 1. Built-in 3D display
 1. Model faceter to create polygonal models for display

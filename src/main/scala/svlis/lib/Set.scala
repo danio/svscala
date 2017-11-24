@@ -19,7 +19,7 @@ class Set(val op: SetOp.Value, val contents: Int, val prim: Primitive, val child
   def this(a: Set, b: Set, optr: SetOp.Value) =
     this(optr, a.contents + b.contents, new Primitive(), Option(a), Option(b))
 
-  // TODO flags support - for convex polygons...
+  // TODO flags support - for convex polygons
   // see all commented out set_flags, set_flags_priv, flags()
 
   // Set union
@@ -112,6 +112,13 @@ class Set(val op: SetOp.Value, val contents: Int, val prim: Primitive, val child
       // TODO svlis caches the complement, is it beneficial?
     }
   }
+
+  // Difference is intersection with complement
+  def -(b: Set) = this & -b
+
+  // Symmetric difference (like XOR) is union of a-b and b-a
+  def ^(b: Set) = (this - b) | (b - this)
+
 
   // Range for a box (and winning leaves)
   def range(b: Box) = {

@@ -66,7 +66,7 @@ class ModelSpec extends FlatSpec with Matchers {
     assert(boxContents(1) > 0)
 
     //ModelDump.dump(divided)
-    ModelToVrml.write(divided, "dividedUnion.wrl", true)
+//    ModelToVrml.write(divided, "setUnion.wrl", true)
   }
 
   it should "support intersected sets" in {
@@ -97,7 +97,7 @@ class ModelSpec extends FlatSpec with Matchers {
     assert(boxContents(1) > 0)
 
     //ModelDump.dump(divided)
-    ModelToVrml.write(divided, "dividedIntersection.wrl", true)
+//    ModelToVrml.write(divided, "setIntersection.wrl", true)
   }
 
   it should "support set complement" in {
@@ -111,10 +111,48 @@ class ModelSpec extends FlatSpec with Matchers {
     val box = new Box(new Point(0, 0, 0), new Point(2, 2, 2))
     val model = Model(set, box)
 
-    val divided = model.divide(ModelSpec.decision(10))
+//    val divided = model.divide(ModelSpec.decision(10))
+//     ModelToVrml.write(divided, "setComplement.wrl", true)
+  }
 
-    //ModelDump.dump(divided)
-    ModelToVrml.write(divided, "dividedIntersectionComplement.wrl", true)
+  it should "support set difference" in {
+    val normalNeg = new Point(1, -1, 0)
+    val normalPos = new Point(1, 1, 0)
+    val throughLeft = new Point(1.5, 1, 1)
+    val slope1 = new Set(new Primitive(new Plane(normalNeg, throughLeft)))
+    val slope2 = new Set(new Primitive(new Plane(normalPos, throughLeft)))
+    val left = slope1 & slope2
+    val throughRight = new Point(0.5, 1, 0)
+    val slope3 = new Set(new Primitive(new Plane(normalNeg, throughRight)))
+    val slope4 = new Set(new Primitive(new Plane(normalPos, throughRight)))
+    val right = slope3 | slope4
+    val set = left - right
+
+    val box = new Box(new Point(0, 0, 0), new Point(2, 2, 2))
+    val model = Model(set, box)
+
+    val divided = model.divide(ModelSpec.decision(12))
+    ModelToVrml.write(divided, "setDifference.wrl", true)
+  }
+
+  it should "support symmetric set difference" in {
+    val normalNeg = new Point(1, -1, 0)
+    val normalPos = new Point(1, 1, 0)
+    val throughLeft = new Point(1.5, 1, 1)
+    val slope1 = new Set(new Primitive(new Plane(normalNeg, throughLeft)))
+    val slope2 = new Set(new Primitive(new Plane(normalPos, throughLeft)))
+    val left = slope1 & slope2
+    val throughRight = new Point(0.5, 1, 1)
+    val slope3 = new Set(new Primitive(new Plane(-normalNeg, throughRight)))
+    val slope4 = new Set(new Primitive(new Plane(-normalPos, throughRight)))
+    val right = slope3 & slope4
+    val set = left ^ right
+
+    val box = new Box(new Point(0, 0, 0), new Point(2, 2, 2))
+    val model = Model(set, box)
+
+    val divided = model.divide(ModelSpec.decision(12))
+    ModelToVrml.write(divided, "setSymmetricDifference.wrl", true)
   }
 }
 
