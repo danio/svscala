@@ -1,11 +1,11 @@
 .DS_store
 
 *.cache
+target/.history
 **/resolution-cache
 **/target/**/*.class
-target/.history
-target/streams
-target/test-reports
+**/target/streams
+**/target/test-reports
 
 *.wrl
 
