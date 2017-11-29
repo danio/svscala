@@ -90,11 +90,12 @@ class ModelToVrml(val pw: PrintWriter, val writeAxes: Boolean = false, val write
   }
 
   def writeArrow(pre: String, direction: Point, colour: Point, baseSize: Double, scale: Double, pointRotation: Point, rotation: Double) = {
-    val translation = direction * baseSize * (1.0 + scale)
+    val lineEnd = direction * baseSize
     writeShape(pre + " ",
-      (pre) => writeLine(pre)(Point.Origin, translation),
+      (pre) => writeLine(pre)(Point.Origin, lineEnd),
       () => pw.write(s"emissiveColor ${colour.x} ${colour.y} ${colour.z}"))
     val coneHeight = baseSize * scale / 2.0
+    val translation = lineEnd * (1.0 + coneHeight)
     writeTransformedChildren(pre,
       () => {
         pw.write(s" translation ${translation.x} ${translation.y} ${translation.z}\n")
