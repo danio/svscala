@@ -19,7 +19,7 @@ object Main extends App {
   val roof = slope1 & slope2 & eave1 & eave2 & roofBase
 
   // The main part of the house - just a simple cuboid
-  val body = Solid.Cuboid(new Point(0.3, 0.3, 0.3), new Point(1.7, 1, 1.7))
+  val body = Solid.cuboid(new Point(0.3, 0.3, 0.3), new Point(1.7, 1, 1.7))
 
   val house = body | roof
 

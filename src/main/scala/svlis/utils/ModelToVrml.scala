@@ -133,7 +133,7 @@ class ModelToVrml(val pw: PrintWriter, val writeAxes: Boolean = false, val write
     pw.write("  Viewpoint { orientation 0 0 0  0  position 0 0 10  description \"Front\" }\n")
     pw.write("  Background { groundColor [ 0.3 0.2 0.1 ] skyColor [ 0.6 0.7 1.0 ] }\n")
     // val d = sqrt(b.diag_sq())
-    val c = m.box.centroid() // TODO b.centroid + SV_Z * d
+    val c = m.box.centroid // TODO b.centroid + SV_Z * d
     writeTranslatedChildren("  ", -c.x, -c.y, -c.z, () => {
       if (writeAxes) writeAxes("   ", m)
       m.walk(writeModel)
