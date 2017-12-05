@@ -1,7 +1,11 @@
 package svlis.lib
 
+import scala.math._
+
 class Interval(val lo: Double, val hi: Double) {
   override def toString(): String = f"Interval [$lo%.3f, $hi%.3f]"
+
+  def equals (that: Interval): Boolean = (lo == that.lo && hi == that.hi)
 
   // Membership test value represented by an interval
   def member(): MemTest.Value = {
@@ -28,9 +32,9 @@ class Interval(val lo: Double, val hi: Double) {
 
   // Intervals and reals
 
-  def +(b: Double): Interval = {
-    new Interval(lo + b, hi + b)
-  }
+  def +(b: Double): Interval = new Interval(lo + b, hi + b)
+
+  def -(b: Double): Interval = this + -b
 
   def *(b: Double): Interval = {
     if (b > 0.0)
@@ -39,10 +43,72 @@ class Interval(val lo: Double, val hi: Double) {
       new Interval(hi * b, lo * b)
   }
 
-  // Interval arithmetic
-
-  def +(b: Interval): Interval = {
-    new Interval(lo + b.lo, hi + b.hi)
+  def /(b: Double): Interval = {
+    assert(b != 0.0)
+    // TODO svlis_error("sv_interval::operator/","division by 0", SV_WARNING)
+    this * (1 / b)
   }
 
+  // Interval arithmetic
+
+  def +(b: Interval): Interval = new Interval(lo + b.lo, hi + b.hi)
+
+  def -(b: Interval): Interval = new Interval(lo - b.hi, hi - b.lo)
+
+  def *(b: Interval): Interval = {
+    val c = lo * b.lo
+    val d = c
+    val q = lo * b.hi
+    val r = hi * b.lo
+    val s = hi * b.hi
+
+    val l = min(min(c, q), min(r, s))
+    val h = max(max(d, q), max(r, s))
+    new Interval(l, h)
+  }
+
+  // Interval division is not defined, as Svlis does not support rationals (yet...)
+
+  // Intervals the same?
+  // same
+
+  // Absolute value of an interval
+  // abs
+
+  // Sign of an interval
+  // sign
+
+  // max
+
+  // min
+
+  // Raise an interval to a power
+  final def pow(i: Double): Interval = {
+    assert(i >= 0)
+    // TODO svlis_error("sv_interval::pow","negative exponent",SV_WARNING)
+    if (i % 2 != 0) {
+      // even powers always become positive so need to worry about sign and lo/hi ordering
+      new Interval(scala.math.pow(lo, i), scala.math.pow(hi, i))
+    } else{
+      if (lo < 0 && hi < 0) {
+        new Interval(scala.math.pow(hi, i), scala.math.pow(lo, i))
+      } else if (lo < 0 && hi >= 0) {
+        new Interval(0, scala.math.pow(max(-lo, hi), i))
+      } else {
+        new Interval(scala.math.pow(lo, i), scala.math.pow(hi, i))
+      }
+    }
+  }
+
+  // sin
+
+  // cos
+
+  // e^interval and log OF A POSITIVE interval
+  // exp
+
+  // log
+
+  // Signed square root
+  // s_sqrt
 }

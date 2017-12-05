@@ -53,7 +53,9 @@ object Solid {
 //    return(result);
 //  }
 
-  // def cylinder(axis: Line, radius: Double): Set = Set(Primitive.cylinder(axis, radius))
+  //  This returns an infinitely long cylinder aligned with the line axis
+  //  and of radius radius.
+  def cylinder(axis: Line, radius: Double): Set = new Set(Primitive.cylinder(axis, radius))
 
   // def thinCylinder(axis: Line, radius: Double): Set = Set(abs(Primitive.cylinder(axis, radius)))
 
@@ -61,7 +63,15 @@ object Solid {
 
   // sphere
 
+  //  This returns a torus with its major circle in a plane through the
+  //  origin of the line axis and perpendicular to axis.  tor_rad is the
+  //  major radius, tor_sect_rad the minor.
   // torus
 
+  //  This returns a cyclide with its major circle in a plane through the
+  //  origin of the line axis and perpendicular to axis.
+  //  sym is a vector that defines the plane of symmetry - it _must_ not
+  //  be parallel to the axis.
+  //  a is the major cyclide radius, m the minor +/- c.
   // cyclide
 }

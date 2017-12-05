@@ -9,9 +9,11 @@ class ModelSpec extends FlatSpec with Matchers {
     val normal = new Point(1, 1, 0)
     val through = new Point(1, 1, 1)
     val set = new Set(new Primitive(new Plane(normal, through)))
+    set.contents should be(1)
 
     val box = new Box(new Point(0, 0, 0), new Point(2, 2, 2))
     val model = Model(set, box)
+    model.set.contents should be(1)
   }
 
   it should "divide into solid and air" in {
@@ -44,10 +46,11 @@ class ModelSpec extends FlatSpec with Matchers {
     val plane1 = new Set(new Primitive(new Plane(normal1, through)))
     val plane2 = new Set(new Primitive(new Plane(normal2, through)))
     val set = plane1 | plane2
-
+    set.contents should be(2)
 
     val box = new Box(new Point(0, 0, 0), new Point(2, 2, 2))
     val model = Model(set, box)
+    model.set.contents should be(2)
 
     val divided = model.divide(ModelSpec.decision(8))
 
@@ -142,10 +145,12 @@ class ModelSpec extends FlatSpec with Matchers {
     val slope1 = new Set(new Primitive(new Plane(normalNeg, throughLeft)))
     val slope2 = new Set(new Primitive(new Plane(normalPos, throughLeft)))
     val left = slope1 & slope2
+    left.contents should be(2)
     val throughRight = new Point(0.5, 1, 1)
     val slope3 = new Set(new Primitive(new Plane(-normalNeg, throughRight)))
     val slope4 = new Set(new Primitive(new Plane(-normalPos, throughRight)))
     val right = slope3 & slope4
+    right.contents should be(2)
     val set = left ^ right
 
     val box = new Box(new Point(0, 0, 0), new Point(2, 2, 2))
@@ -154,14 +159,37 @@ class ModelSpec extends FlatSpec with Matchers {
 //    val divided = model.divide(ModelSpec.decision(12))
 //    ModelToVrml.write(divided, "setSymmetricDifference.wrl", true)
   }
+
+  it should "support cylinder solids" in {
+    val axis = new Line(Point.Z, Point.Origin)
+    val radius = 1.0
+    val cyl = Solid.cylinder(axis, radius)
+    cyl.contents should be(1)
+
+    val box = new Box(new Point(-1, -1, -1), new Point(1, 1, 1))
+//    cyl.prim.range(box) should be(new Interval(0, 2))
+//    cyl.prim.range(box).member() should be(MemTest.Surface)
+    cyl.prune(box).contents should be(1)
+    val model = Model(cyl, box)
+    model.set.contents should be(1)
+
+    val divided = model.divide(ModelSpec.decision(12))
+    divided match {
+      case DividedModel(_,_,_,_,_) => ()
+      case _ => fail("model has not been divided")
+    }
+    //ModelDump.dump(divided)
+    ModelToVrml.write(divided, "sv_cylinder.wrl", true)
+  }
 }
 
 object ModelSpec {
   def mid(iv: Interval): Double = iv.lo + (iv.hi - iv.lo) / 2.0d
 
   def decision(maxDepth: Int)(m: Model, level: Int): DivideDecision = {
-    if (level > maxDepth || m.set.contents <= Contents.Nothing) new DivideDecision(ModelKind.Leaf, 0)
-    else level % 3 match {
+    if (level > maxDepth || m.set.contents <= Contents.Nothing) {
+      new DivideDecision(ModelKind.Leaf, 0)
+    } else level % 3 match {
       case 0 => new DivideDecision(ModelKind.XDiv, mid(m.box.xi))
       case 1 => new DivideDecision(ModelKind.YDiv, mid(m.box.yi))
       case 2 => new DivideDecision(ModelKind.ZDiv, mid(m.box.zi))

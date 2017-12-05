@@ -121,10 +121,10 @@ class Set(val op: SetOp.Value, val contents: Int, val prim: Primitive, val child
 
 
   // Range for a box (and winning leaves)
-  def range(b: Box) = {
-    // TODO logic from set.cxx 1114-1173
-    // although I'm not sure that it is needed as I can't see it being used by anything
-  }
+//  def range(b: Box) = {
+//    // TODO logic from set.cxx 1114-1173
+//    // although I'm not sure that it is needed as I can't see it being used by anything
+//  }
 
   // Prune a set to a box
   def prune(b: Box): Set = {
