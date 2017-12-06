@@ -281,7 +281,7 @@ object Primitive {
 
   //  This returns an infinitely long cylinder aligned with the line axis
   //  and of radius radius.
-  def cylinder(axis: Line, radius: Double) = {
+  def cylinder(axis: Line, radius: Double): Primitive = {
     val ax = axis.direction
     val cent = axis.origin
 
@@ -296,7 +296,7 @@ object Primitive {
     val hs1 = new Primitive(new Plane(srad1, cent))
 
     //  The product of their squares - radius^2 is the cylinder
-    val c = (hs0 ^ 2) + (hs1 ^ 2) - new Primitive(radius * radius)
+    val c = (hs0.pow(2)) + (hs1.pow(2)) - new Primitive(radius * radius)
     // TODO needed for ray tracer and slice(): c.set_kind(SV_CYLINDER);
     // TODO support real_d?
 //    if (real_d)
@@ -304,8 +304,24 @@ object Primitive {
 //    else
         c
   }
+
   //  friend sv_primitive p_cone(const sv_line&, sv_real);
-  //  friend sv_primitive p_sphere(const sv_point&, sv_real);
+
+  def sphere(centre: Point, radius: Double): Primitive = {
+    val xhs = new Primitive(new Plane(Point.X, centre))
+    val yhs = new Primitive(new Plane(Point.Y, centre))
+    val zhs = new Primitive(new Plane(Point.Z, centre))
+
+    val s = xhs.pow(2) + yhs.pow(2) + zhs.pow(2) - new Primitive(radius * radius)
+//    TODO needed for ray tracer and slice(): s.set_kind(SV_SPHERE);
+    // TODO support real_d?
+//    if (real_d)
+//      return(s_sqrt(s));
+//    else
+//      return(s);
+    s
+  }
+
   //  friend sv_primitive p_torus(const sv_line&, sv_real, sv_real);
   //  friend sv_primitive p_cyclide(const sv_line&, const sv_point&,
   //    sv_real, sv_real, sv_real);

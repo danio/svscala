@@ -61,7 +61,7 @@ object Solid {
 
   // cone
 
-  // sphere
+  def sphere(centre: Point, radius: Double): Set = new Set(Primitive.sphere(centre, radius))
 
   //  This returns a torus with its major circle in a plane through the
   //  origin of the line axis and perpendicular to axis.  tor_rad is the

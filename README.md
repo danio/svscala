@@ -35,7 +35,8 @@ The anticipated work stages are:
 1. Single plane support with model division
 1. Export model voxels in format suitable for 3D viewer
 1. Add set operations to support multiple primitives in a set
-1. Add additional primitives and primitive operations (currently in-progress)
+1. Add additional primitives (currently in-progress)
+1. Add primitive transformations
 1. Built-in 3D display
 1. Model faceter to create polygonal models for display
 1. Support set colouring

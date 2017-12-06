@@ -167,8 +167,26 @@ class ModelSpec extends FlatSpec with Matchers {
     cyl.contents should be(1)
 
     val box = new Box(new Point(-1, -1, -1), new Point(1, 1, 1))
-//    cyl.prim.range(box) should be(new Interval(0, 2))
-//    cyl.prim.range(box).member() should be(MemTest.Surface)
+    cyl.prune(box).contents should be(1)
+    val model = Model(cyl, box)
+    model.set.contents should be(1)
+
+    val divided = model.divide(ModelSpec.decision(3))
+    divided match {
+      case DividedModel(_,_,_,_,_) => ()
+      case _ => fail("model has not been divided")
+    }
+    //ModelDump.dump(divided)
+    //ModelToVrml.write(divided, "sv_cylinder.wrl", true)
+  }
+
+  it should "support sphere solids" in {
+    val centre = new Point(0.2, 0.3, -0.2)
+    val radius = 0.8
+    val cyl = Solid.sphere(centre, radius)
+    cyl.contents should be(1)
+
+    val box = new Box(new Point(-1, -1, -1), new Point(1, 1, 1))
     cyl.prune(box).contents should be(1)
     val model = Model(cyl, box)
     model.set.contents should be(1)
@@ -179,8 +197,9 @@ class ModelSpec extends FlatSpec with Matchers {
       case _ => fail("model has not been divided")
     }
     //ModelDump.dump(divided)
-    ModelToVrml.write(divided, "sv_cylinder.wrl", true)
+    ModelToVrml.write(divided, "sv_sphere.wrl", true)
   }
+
 }
 
 object ModelSpec {
