@@ -5,7 +5,27 @@ Full details about svLis can be found at http://adrianbowyer.com/inge/svlis and 
 
 # How to use svLis
 
-See the scala/example directory for examples of generating 3D models
+A simple program to construct an infinitely long cylinder.
+
+```
+import svlis.lib._
+
+object Main extends App {
+    // The axis is vertical in Z, going through point (0.2, 0.2, 0)
+    val axis = new Line(Point.Z, new Point(0.2, 0.2, 0))
+    val radius = 1.0
+    // Create a svlis set
+    val cyl = Solid.cylinder(axis, radius)
+    // A bounding box is required so that svLis know which part of space we are interested in
+    val box = new Box(new Point(-1, -1, -1), new Point(1, 1, 1))
+    // A model is a set withing a bounding box
+    val model = Model(cyl, box)
+    // The model could now be displayed, exported to VRML - see examples directory
+}
+
+```
+
+See the scala/examples directory for how these models can be displayed and longer examples.
 
 # Project roadmap
 
@@ -15,8 +35,7 @@ The anticipated work stages are:
 1. Single plane support with model division
 1. Export model voxels in format suitable for 3D viewer
 1. Add set operations to support multiple primitives in a set
-1. Add additional primitives (currently in-progress)
-1. Add primitive operations
+1. Add additional primitives and primitive operations (currently in-progress)
 1. Built-in 3D display
 1. Model faceter to create polygonal models for display
 1. Support set colouring
