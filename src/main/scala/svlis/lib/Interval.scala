@@ -3,9 +3,16 @@ package svlis.lib
 import scala.math._
 
 class Interval(val lo: Double, val hi: Double) {
+  assert(hi >= lo, "Interval lo must be below hi")
+
   override def toString(): String = f"Interval [$lo%.3f, $hi%.3f]"
 
-  def equals (that: Interval): Boolean = (lo == that.lo && hi == that.hi)
+  final override def equals (other: Any): Boolean = {
+    val that = other.asInstanceOf[Interval]
+    if (that == null) false
+    else (lo == that.lo && hi == that.hi)
+  }
+  final override def hashCode = 13 * lo.hashCode + 17 * hi.hashCode
 
   // Membership test value represented by an interval
   def member(): MemTest.Value = {
@@ -87,9 +94,9 @@ class Interval(val lo: Double, val hi: Double) {
     assert(i >= 0)
     // TODO svlis_error("sv_interval::pow","negative exponent",SV_WARNING)
     if (i % 2 != 0) {
-      // even powers always become positive so need to worry about sign and lo/hi ordering
       new Interval(scala.math.pow(lo, i), scala.math.pow(hi, i))
     } else{
+      // even powers always become positive so need to worry about sign and lo/hi ordering
       if (lo < 0 && hi < 0) {
         new Interval(scala.math.pow(hi, i), scala.math.pow(lo, i))
       } else if (lo < 0 && hi >= 0) {
