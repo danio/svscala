@@ -69,7 +69,7 @@ class ModelSpec extends FlatSpec with Matchers {
     assert(boxContents(1) > 0)
 
     //ModelDump.dump(divided)
-//    ModelToVrml.write(divided, "setUnion.wrl", true)
+    //ModelToStl.write(divided, "setUnion.stl", true)
   }
 
   it should "support intersected sets" in {
@@ -163,12 +163,12 @@ class ModelSpec extends FlatSpec with Matchers {
   it should "support cylinder solids" in {
     val axis = new Line(Point.Z, Point.Origin)
     val radius = 1.0
-    val cyl = Solid.cylinder(axis, radius)
-    cyl.contents should be(1)
+    val shape = Solid.cylinder(axis, radius)
+    shape.contents should be(1)
 
     val box = new Box(new Point(-1, -1, -1), new Point(1, 1, 1))
-    cyl.prune(box).contents should be(1)
-    val model = Model(cyl, box)
+    shape.prune(box).contents should be(1)
+    val model = Model(shape, box)
     model.set.contents should be(1)
 
     val divided = model.divide(ModelSpec.decision(3))
@@ -176,30 +176,46 @@ class ModelSpec extends FlatSpec with Matchers {
       case DividedModel(_,_,_,_,_) => ()
       case _ => fail("model has not been divided")
     }
-    //ModelDump.dump(divided)
     //ModelToVrml.write(divided, "sv_cylinder.wrl", true)
   }
 
   it should "support sphere solids" in {
     val centre = new Point(0.2, 0.3, -0.2)
     val radius = 0.8
-    val cyl = Solid.sphere(centre, radius)
-    cyl.contents should be(1)
+    val shape = Solid.sphere(centre, radius)
+    shape.contents should be(1)
 
     val box = new Box(new Point(-1, -1, -1), new Point(1, 1, 1))
-    cyl.prune(box).contents should be(1)
-    val model = Model(cyl, box)
+    shape.prune(box).contents should be(1)
+    val model = Model(shape, box)
     model.set.contents should be(1)
 
-    val divided = model.divide(ModelSpec.decision(12))
+    val divided = model.divide(ModelSpec.decision(6))
     divided match {
       case DividedModel(_,_,_,_,_) => ()
       case _ => fail("model has not been divided")
     }
-    //ModelDump.dump(divided)
-    ModelToVrml.write(divided, "sv_sphere.wrl", true)
+    //ModelToVrml.write(divided, "sv_sphere.wrl", true)
   }
 
+  it should "support cyclide solids" in {
+    val centre = new Point(0.2, 0.3, -0.2)
+    val radius = 0.8
+    val shape = Solid.cyclide(new Line(Point.Z, Point.Origin), Point.X, 1.0, 0.5, 0.1)
+    shape.contents should be(1)
+
+    val box = new Box(new Point(-2, -2, -2), new Point(2, 2, 2))
+    shape.prune(box).contents should be(1)
+    val model = Model(shape, box)
+    model.set.contents should be(1)
+
+    val divided = model.divide(ModelSpec.decision(18))
+    divided match {
+      case DividedModel(_,_,_,_,_) => ()
+      case _ => fail("model has not been divided")
+    }
+    //ModelToVrml.write(divided, "sv_cyclide.wrl", true)
+  }
 }
 
 object ModelSpec {
