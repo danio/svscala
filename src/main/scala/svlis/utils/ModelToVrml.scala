@@ -2,7 +2,7 @@ package svlis
 package utils
 
 import java.io._
-import lib._
+import svlis.lib._
 
 // VRML export logic from polygon.cxx lines 1861-2116
 
@@ -59,26 +59,29 @@ class ModelToVrml(val pw: PrintWriter, val writeAxes: Boolean = false, val write
     })
   }
 
+  def writeCuboid(b: Box, color: Point, transparency: Double = 0.0) {
+    val sx = b.xi.hi - b.xi.lo
+    val sy = b.yi.hi - b.yi.lo
+    val sz = b.zi.hi - b.zi.lo
+    // VRML boxes are centred about the origin, so they
+    // need to be translated by half their size and also their box minimum
+    val tx = sx / 2 + b.xi.lo
+    val ty = sy / 2 + b.yi.lo
+    val tz = sz / 2 + b.zi.lo
+    val pre = "    "
+    writeTransformedShape(pre, tx, ty, tz,
+      (pre) => writeBox(pre)(sx, sy, sz),
+      () => {
+        if (transparency > 0.0) {
+          pw.write(s"transparency $transparency ")
+        }
+        // TODO pw.write(" diffuseColor ${color.x} ${color.y} ${color.z}")
+      })
+  }
+
   def writeModelBox(m: Model) = {
     if (m.set.contents != Contents.Nothing) {
-      val sx = m.box.xi.hi - m.box.xi.lo
-      val sy = m.box.yi.hi - m.box.yi.lo
-      val sz = m.box.zi.hi - m.box.zi.lo
-      // VRML boxes are centred about the origin, so they
-      // need to be translated by half their size and also their box minimum
-      val tx = sx / 2 + m.box.xi.lo
-      val ty = sy / 2 + m.box.yi.lo
-      val tz = sz / 2 + m.box.zi.lo
-      val b = m.box
-      val pre = "    "
-      writeTransformedShape(pre, tx, ty, tz,
-        (pre) => writeBox(pre)(sx, sy, sz),
-        () => {
-          if (m.set.contents != Contents.Everything) {
-            pw.write("transparency 0.2 ")
-          }
-          // TODO pw.write(" diffuseColor 1.0 1.0 0.0")
-        })
+      writeCuboid(m.box, new Point(1, 0, 0), if (m.set.contents != Contents.Everything) 0.2 else 0.0)
     }
   }
 

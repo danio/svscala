@@ -1,7 +1,7 @@
 package svlis
 package utils
 
-import lib._
+import svlis.lib._
 
 object ModelDump {
   def dump(m: Model) = m.walk((m: Model, level: Int) => {

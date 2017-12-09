@@ -37,6 +37,7 @@ object House extends App {
 
   // Currently models can be exported as VRML
   utils.ModelToVrml.write(dividedModel, "house.wrl", true)
+  utils.ModelToStl.write(dividedModel, "house.stl", true)
 
   def mid(iv: Interval): Double = iv.lo + (iv.hi - iv.lo) / 2.0d
 
