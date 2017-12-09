@@ -128,6 +128,7 @@ class Primitive(
 
   // Only here for compatibility with svlis
   // It's not nice to overload XOR operator with pow!
+  @deprecated("use pow instead")
   def ^(b: Long) = this pow b
 
   // Test for an undefined set
@@ -192,6 +193,23 @@ class Primitive(
               }
             }
           }
+          case PrimOp.Times => {
+            if (c_1) {
+              if (c_2) {
+                // TODO svlis_error("sv_primitive::range(box)","primitive is real*real", SV_WARNING)
+                new Interval(child_1.get.real * child_2.get.real, child_1.get.real * child_2.get.real)
+              } else {
+                child_2.get.range(b) * child_1.get.real // equivalent to real * interval
+              }
+            } else {
+              if (c_2) {
+                child_1.get.range(b) * child_2.get.real
+              } else {
+                child_1.get.range(b) * child_2.get.range(b)
+              }
+            }
+          }
+          //case PrimOp.Divide
           case PrimOp.Power => {
             assert (c_2)
             // TODO svlis_error("sv_primitive::range(box)","exponent is a primitive", SV_WARNING)
@@ -203,6 +221,12 @@ class Primitive(
             }
           }
           case PrimOp.Comp => -child_1.get.range(b)
+//          case PrimOp.Abs
+//          case PrimOp.Sin
+//          case PrimOp.Cos
+//          case PrimOp.Exp
+//          case PrimOp.SSqrt
+//          case PrimOp.Sign
           // TODO rest of cases from prim.cxx 2108- including fall through of Plane with an op
         }
       }
@@ -323,6 +347,20 @@ object Primitive {
   }
 
   //  friend sv_primitive p_torus(const sv_line&, sv_real, sv_real);
-  //  friend sv_primitive p_cyclide(const sv_line&, const sv_point&,
-  //    sv_real, sv_real, sv_real);
+
+  def cyclide(axis: Line, sym: Point, a: Double, m: Double, c: Double): Primitive = {
+    val b2 = a * a + c * c
+    val ax = axis.direction
+    val cent = axis.origin
+    val srad2 = ax ^ (sym - axis.origin)
+    val srad1 = srad2 ^ ax
+    val hs1 = new Primitive(new Plane(srad1, cent))
+    val hs2 = new Primitive(new Plane(srad2, cent))
+    val hs3 = new Primitive(new Plane(ax, cent))
+    val t = (hs1.pow(2) + hs2.pow(2) + hs3.pow(2) + new Primitive(b2 - m * m)).pow(2) -
+      (new Primitive(2 * a) * hs1 - new Primitive(2 * c * m)).pow(2) -
+      new Primitive(4 * b2) * hs2.pow(2)
+    // TODO needed for ray tracer and slice():t.set_kind(SV_CYCLIDE);
+    t
+  }
 }

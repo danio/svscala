@@ -73,5 +73,5 @@ object Solid {
   //  sym is a vector that defines the plane of symmetry - it _must_ not
   //  be parallel to the axis.
   //  a is the major cyclide radius, m the minor +/- c.
-  // cyclide
+  def cyclide(axis: Line, sym: Point, a: Double, m: Double, c: Double): Set = new Set(Primitive.cyclide(axis, sym, a, m, c))
 }
